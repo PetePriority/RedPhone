@@ -465,7 +465,13 @@ public class RedPhoneService extends Service implements CallStateListener, CallS
       handleMissedCall(remoteNumber);
 
     sendMessage(RedPhone.HANDLE_CALL_DISCONNECTED, null);
-    this.terminate();
+    outgoingRinger.playBusy();
+    serviceHandler.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        RedPhoneService.this.terminate();
+      }
+    }, RedPhone.BUSY_SIGNAL_DELAY_FINISH);
   }
 
   public void notifyHandshakeFailed() {
